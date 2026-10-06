@@ -1,0 +1,399 @@
+<!doctype html>
+<html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Administration — KelJayden Créations</title>
+<style>
+:root{--rose:#c98282;--cream:#fff9f6;--line:#ead8d3;--ink:#292321;--muted:#766a67}*{box-sizing:border-box}body{margin:0;font-family:Arial,sans-serif;background:var(--cream);color:var(--ink)}button{font:inherit;cursor:pointer}.wrap{max-width:1150px;margin:auto;padding:25px}header{display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--line);padding-bottom:18px}.brand{font:30px Georgia,serif}.brand small{display:block;font:9px Arial;letter-spacing:4px;text-align:center}.actions{display:flex;gap:8px}.btn{border:0;background:var(--rose);color:white;padding:11px 14px;border-radius:4px}.ghost{background:#fff;color:#6e5652;border:1px solid #dac5c0}.hidden{display:none!important}.login{max-width:430px;margin:80px auto;background:#fff;border:1px solid var(--line);padding:28px;border-radius:10px}.login label,.editor label{display:block;font-size:12px;margin:12px 0}.login input,.editor input,.editor textarea,.editor select,.toolbar select{width:100%;padding:11px;border:1px solid #ddccc7;background:#fff;margin-top:5px}.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:20px}.stat{background:#f1e3df;padding:18px}.stat span{font-size:12px;color:var(--muted)}.stat b{display:block;font-size:28px;margin-top:6px}.tabs{display:flex;gap:8px;margin:18px 0}.card{background:#fff;border:1px solid var(--line);border-radius:10px;padding:20px;margin-top:14px}.toolbar{display:flex;justify-content:space-between;align-items:center;gap:12px}.row{display:grid;grid-template-columns:2fr 1fr 1fr 1fr auto;gap:12px;align-items:center;padding:13px 0;border-bottom:1px solid #eee}.row:last-child{border-bottom:0}.muted{font-size:11px;color:var(--muted)}.low{color:#a4564f;font-weight:bold}.order{border:1px solid #eee;padding:15px;margin-top:12px}.orderHead{display:flex;justify-content:space-between}.editorModal{position:fixed;inset:0;background:rgba(30,20,17,.55);display:none;align-items:center;justify-content:center;padding:20px}.editorModal.on{display:flex}.editor{width:min(560px,100%);background:var(--cream);padding:26px;border-radius:10px}.grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}.error{color:#a2463d;font-size:12px}.notice{background:#f0e3df;padding:12px;font-size:12px;margin-top:12px}#accountTab label{display:block;font-size:12px;margin:12px 0}#accountTab input{width:100%;padding:11px;border:1px solid #ddccc7;background:#fff;margin-top:5px}
+@media(max-width:760px){.stats{grid-template-columns:1fr 1fr}.row{grid-template-columns:1fr 1fr}.toolbar{align-items:flex-start;flex-direction:column}.grid2{grid-template-columns:1fr}}
+.danger{background:#9a5c56!important;color:#fff!important;border-color:#9a5c56!important}
+#aboutTab label{display:block;font-size:12px;margin:12px 0}#aboutTab input,#aboutTab textarea{width:100%;padding:11px;border:1px solid #ddccc7;margin-top:5px;font:inherit}#adminsTab label{display:block;font-size:12px;margin:12px 0}#adminsTab input{width:100%;padding:11px;border:1px solid #ddccc7;background:#fff;margin-top:5px}.adminRow{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:13px 0;border-bottom:1px solid #eadeda}.adminMeta{font-size:12px;color:var(--muted)}
+#promotionsTab label{display:block;font-size:12px;margin:10px 0}#promotionsTab input,#promotionsTab select{width:100%;padding:10px;border:1px solid #ddccc7;background:#fff;margin-top:4px}.promoRow{display:flex;justify-content:space-between;gap:12px;align-items:center;padding:11px 0;border-bottom:1px solid #eadeda}
+</style></head>
+<body><div class="wrap">
+<header><a href="/" style="color:inherit;text-decoration:none"><div class="brand">KelJayden<small>CRÉATIONS</small></div></a><div class="actions"><a href="/" class="btn ghost" style="text-decoration:none">Voir la boutique</a><button id="logoutBtn" class="btn hidden" onclick="logout()">Déconnexion</button></div></header>
+
+<section id="adminApp" class="hidden">
+<div class="stats"><div class="stat"><span>CA encaissé</span><b id="revenue">0 €</b></div><div class="stat"><span>Commandes</span><b id="ordersCount">0</b></div><div class="stat"><span>Produits actifs</span><b id="productsCount">0</b></div><div class="stat"><span>Stock faible</span><b id="lowStock">0</b></div></div>
+<div class="tabs"><button class="btn" onclick="showTab('productsTab')">Produits & stocks</button><button class="btn" onclick="showTab('ordersTab')">Commandes</button><button class="btn" onclick="showTab('accountTab')">Mon compte</button><button class="btn" onclick="showTab('adminsTab')">Administrateurs</button><button class="btn" onclick="showTab('promotionsTab')">Promotions</button><button class="btn" onclick="showTab('aboutTab')">À propos</button></div>
+
+<div id="productsTab" class="card"><div class="toolbar"><div><h2>Produits</h2><div class="muted">Les modifications apparaissent automatiquement dans la boutique.</div></div><button class="btn" onclick="openEditor()">+ Ajouter un produit</button></div><div id="productList"></div></div>
+
+<div id="ordersTab" class="card hidden"><div class="toolbar"><h2>Commandes</h2><select id="orderFilter" onchange="renderOrders()"><option value="">Toutes</option><option value="pending">En attente</option><option value="preparing">En préparation</option><option value="shipped">Expédiées</option><option value="completed">Terminées</option><option value="cancelled">Annulées</option><option value="closed">Fermées / archivées</option></select></div><div id="orderList"></div></div>
+
+<div id="aboutTab" class="card hidden"><h2>À propos</h2><p class="muted">Modifiez cette partie de la boutique.</p><form id="aboutForm"><label>Petit titre<input id="aboutKickerInput"></label><label>Titre<input id="aboutTitleInput" required></label><label>Texte<textarea id="aboutTextInput" rows="7" required></textarea></label><label>URL de l’image<input id="aboutImageInput" placeholder="/hero.png"></label><button class="btn" type="submit">Enregistrer</button><p id="aboutMsg" class="muted"></p></form></div>
+
+
+<div id="promotionsTab" class="card hidden">
+ <h2>Promotions & codes promo</h2>
+ <h3>Créer un code promo</h3>
+ <form id="promoCodeForm" style="max-width:700px">
+  <label>Code<input id="promoCode" placeholder="BIENVENUE10" required></label>
+  <label>Type<select id="promoType"><option value="percent">Pourcentage (%)</option><option value="fixed">Montant fixe (€)</option></select></label>
+  <label>Valeur<input id="promoValue" type="number" min="1" step="1" required></label>
+  <label>Commande minimum (€)<input id="promoMinimum" type="number" min="0" step="0.01" value="0"></label>
+  <label>Début (facultatif)<input id="promoStart" type="datetime-local"></label>
+  <label>Fin (facultatif)<input id="promoEnd" type="datetime-local"></label>
+  <button class="btn">Créer le code promo</button><p id="promoMsg" class="muted"></p>
+ </form>
+ <h3>Codes existants</h3><div id="promoCodesList"></div>
+ <hr style="margin:28px 0;border:0;border-top:1px solid #eadeda">
+ <h3>Réduction sur un produit</h3>
+ <form id="productPromoForm" style="max-width:700px">
+  <label>Produit<select id="promoProduct"></select></label>
+  <label>Type<select id="productPromoType"><option value="percent">Pourcentage (%)</option><option value="fixed">Montant fixe (€)</option></select></label>
+  <label>Valeur<input id="productPromoValue" type="number" min="1" step="1" required></label>
+  <label>Début (facultatif)<input id="productPromoStart" type="datetime-local"></label>
+  <label>Fin (facultatif)<input id="productPromoEnd" type="datetime-local"></label>
+  <button class="btn">Appliquer la réduction</button>
+ </form>
+ <h3>Promotions produits actives</h3><div id="productPromosList"></div>
+</div>
+
+<div id="adminsTab" class="card hidden">
+  <div class="toolbar"><h2>Administrateurs</h2></div>
+  <div class="muted">Créez et gérez les accès au Dashboard. Le compte administrateur principal est protégé.</div>
+
+  <form id="newAdminForm" style="max-width:620px;margin:18px 0 26px">
+    <label>E-mail du nouvel administrateur
+      <input id="newAdminEmail" type="email" autocomplete="off" required>
+    </label>
+    <label>Mot de passe temporaire
+      <input id="newAdminPassword" type="password" minlength="10" autocomplete="new-password" required>
+    </label>
+    <label>Confirmer le mot de passe
+      <input id="newAdminPassword2" type="password" minlength="10" autocomplete="new-password" required>
+    </label>
+    <button class="btn" type="submit">Créer l’administrateur</button>
+    <p id="newAdminMessage" class="muted"></p>
+  </form>
+
+  <h3>Comptes administrateurs</h3>
+  <div id="adminsList"></div>
+</div>
+
+<div id="accountTab" class="card hidden">
+  <h2>Mon compte</h2>
+  <div class="muted">Modifiez votre adresse e-mail ou votre mot de passe administrateur ici.</div>
+  <form id="emailForm" style="max-width:520px;margin-top:16px">
+    <label>Nouvelle adresse e-mail<input id="newAdminEmailAddress" type="email" autocomplete="email" required></label>
+    <label>Mot de passe actuel<input id="emailCurrentPassword" type="password" autocomplete="current-password" required></label>
+    <button class="btn" type="submit">Changer mon adresse e-mail</button>
+    <p id="emailMessage" class="muted"></p>
+  </form>
+  <hr style="margin:25px 0;border:0;border-top:1px solid #eadeda">
+  <form id="passwordForm" style="max-width:520px;margin-top:16px">
+    <label>Mot de passe actuel<input id="currentPassword" type="password" autocomplete="current-password" required></label>
+    <label>Nouveau mot de passe<input id="newPassword" type="password" minlength="10" autocomplete="new-password" required></label>
+    <label>Confirmer le nouveau mot de passe<input id="confirmPassword" type="password" minlength="10" autocomplete="new-password" required></label>
+    <button class="btn" type="submit">Changer mon mot de passe</button>
+    <p id="passwordMessage" class="muted"></p>
+  </form>
+  <div class="notice">Après modification, vous serez déconnecté automatiquement et devrez vous reconnecter avec le nouveau mot de passe.</div>
+</div>
+</section></div>
+
+<div id="editorModal" class="editorModal"><div class="editor"><h2 id="editorTitle">Produit</h2><form id="productForm">
+<input type="hidden" id="pid"><label>Nom<input id="pname" required></label><label>Description<textarea id="pdesc" rows="4"></textarea></label>
+<div class="grid2"><label>Prix (€)<input id="pprice" type="number" min="0" step=".01" required></label><label>Stock<input id="pstock" type="number" min="0" step="1" required></label></div>
+<label>Image (URL)<input id="pimage" placeholder="/hero.png"></label><label><input id="pactive" type="checkbox" style="width:auto" checked> Produit visible dans la boutique</label>
+<div class="actions"><button type="button" class="btn ghost" onclick="closeEditor()">Annuler</button><button class="btn">Enregistrer</button></div></form></div></div>
+
+<script>
+const eur=c=>(c/100).toLocaleString('fr-FR',{style:'currency',currency:'EUR'});
+let products=[],orders=[];
+
+async function api(url,opt={}){
+  const r=await fetch(url,{headers:{'Content-Type':'application/json'},credentials:'same-origin',...opt});
+  let d={};
+  try{d=await r.json()}catch{}
+  if(!r.ok)throw new Error(d.error||'Erreur serveur');
+  return d;
+}
+
+function esc(s){
+  return String(s??'').replace(/[&<>"']/g,m=>({
+    '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'
+  }[m]));
+}
+
+async function boot(){
+  try{
+    const me=await api('/api/admin/me');
+    // Toute session admin valide peut ouvrir le Dashboard,
+    // même si l'adresse e-mail du compte principal a été modifiée.
+    if(!me || !me.id || !me.email) throw new Error('Accès refusé');
+    adminApp.classList.remove('hidden');
+    logoutBtn.classList.remove('hidden');
+    await loadAll();
+  }catch(err){
+    location.replace('/');
+  }
+}
+
+async function logout(){
+  await api('/api/admin/logout',{method:'POST'});
+  location.replace('/');
+}
+
+async function loadAll(){
+  const [s,p,o]=await Promise.all([
+    api('/api/admin/stats'),
+    api('/api/admin/products'),
+    api('/api/admin/orders')
+  ]);
+  revenue.textContent=eur(s.revenue_cents);
+  ordersCount.textContent=s.orders;
+  productsCount.textContent=s.products;
+  lowStock.textContent=s.low_stock;
+  products=p;
+  orders=o;
+  renderProducts();
+  renderOrders();
+}
+
+function showTab(id){
+  productsTab.classList.toggle('hidden',id!=='productsTab');
+  ordersTab.classList.toggle('hidden',id!=='ordersTab');
+  accountTab.classList.toggle('hidden',id!=='accountTab');
+  adminsTab.classList.toggle('hidden',id!=='adminsTab');
+  promotionsTab.classList.toggle('hidden',id!=='promotionsTab');
+  if(id==='promotionsTab') loadPromotions();
+  if(id==='adminsTab') loadAdmins();
+  aboutTab.classList.toggle('hidden',id!=='aboutTab');
+  if(id==='aboutTab') loadAboutAdmin();
+}
+
+function renderProducts(){
+  productList.innerHTML=products.map(p=>`
+    <div class="row">
+      <div><b>${esc(p.name)}</b><div class="muted">${esc(p.description)}</div></div>
+      <span>${eur(p.price_cents)}</span>
+      <span class="${p.stock<=5?'low':''}">Stock : ${p.stock}</span>
+      <span>${p.active?'Visible':'Masqué'}</span>
+      <div class="actions">
+        <button class="btn ghost" onclick="editProduct(${p.id})">Modifier</button>
+        <button class="btn danger" onclick="deleteProduct(${p.id},\`${esc(p.name)}\`)">Supprimer</button>
+      </div>
+    </div>`).join('')||'<p>Aucun produit.</p>';
+}
+
+function openEditor(p=null){
+  editorModal.classList.add('on');
+  editorTitle.textContent=p?'Modifier le produit':'Ajouter un produit';
+  pid.value=p?.id||'';
+  pname.value=p?.name||'';
+  pdesc.value=p?.description||'';
+  pprice.value=p?(p.price_cents/100).toFixed(2):'';
+  pstock.value=p?.stock??0;
+  pimage.value=p?.image_url||'/hero.png';
+  pactive.checked=p?p.active===1:true;
+}
+function closeEditor(){editorModal.classList.remove('on')}
+function editProduct(id){openEditor(products.find(p=>p.id===id))}
+
+productForm.addEventListener('submit',async e=>{
+  e.preventDefault();
+  const body={
+    name:pname.value,
+    description:pdesc.value,
+    price_cents:Math.round(Number(pprice.value)*100),
+    stock:Number(pstock.value),
+    image_url:pimage.value||'/hero.png',
+    active:pactive.checked
+  };
+  try{
+    if(pid.value){
+      await api('/api/admin/products/'+pid.value,{method:'PUT',body:JSON.stringify(body)});
+    }else{
+      await api('/api/admin/products',{method:'POST',body:JSON.stringify(body)});
+    }
+    closeEditor();
+    await loadAll();
+  }catch(err){alert(err.message)}
+});
+
+async function deleteProduct(id,name){
+  if(!confirm(`Supprimer l’annonce "${name}" ?
+
+Cette action la retirera de la boutique.`)) return;
+  try{
+    const result=await api('/api/admin/products/'+id,{method:'DELETE'});
+    if(result.message) alert(result.message);
+    await loadAll();
+  }catch(err){
+    alert(err.message);
+  }
+}
+
+const labels={
+  pending:'En attente',
+  preparing:'En préparation',
+  shipped:'Expédiée',
+  completed:'Terminée',
+  cancelled:'Annulée'
+};
+
+function renderOrders(){
+  const f=orderFilter.value;
+  const list=orders.filter(o=>{
+    if(f==='closed') return Number(o.closed)===1;
+    if(Number(o.closed)===1) return false;
+    return !f||o.status===f;
+  });
+  orderList.innerHTML=list.map(o=>`
+    <div class="order">
+      <div class="orderHead"><b>N° de commande : ${esc(o.number)}</b><b>${eur(o.total_cents)}</b></div>
+      <div class="muted">
+        ${esc(o.first_name)} ${esc(o.last_name)} · ${esc(o.email)} · ${esc(o.city)}
+        · Paiement : ${esc(o.payment_status)}
+      </div>
+      <p>${o.items.map(i=>`${esc(i.name)} × ${i.quantity}`).join(' • ')}</p>
+      <select onchange="setStatus(${o.id},this.value)" ${Number(o.closed)===1?'disabled':''}>
+        ${Object.entries(labels).map(([v,l])=>`<option value="${v}" ${o.status===v?'selected':''}>${l}</option>`).join('')}
+      </select>
+      ${Number(o.closed)===1 ? '<span class="muted" style="margin-left:10px">Commande fermée</span>' : ['completed','cancelled'].includes(o.status) ? `<button class="btn ghost" style="margin-left:8px" onclick="closeOrder(${o.id})">Fermer la commande</button>` : ''}
+    </div>`).join('')||'<p>Aucune commande.</p>';
+}
+
+async function setStatus(id,status){
+  try{
+    await api('/api/admin/orders/'+id+'/status',{method:'PATCH',body:JSON.stringify({status})});
+    await loadAll();
+  }catch(err){alert(err.message)}
+}
+
+async function closeOrder(id){
+  if(!confirm('Fermer cette commande ? Elle sera déplacée dans « Fermées / archivées ».')) return;
+  try{
+    await api('/api/admin/orders/'+id+'/close',{method:'PATCH'});
+    await loadAll();
+  }catch(err){alert(err.message)}
+}
+
+
+emailForm.addEventListener('submit',async e=>{
+  e.preventDefault(); emailMessage.textContent='';
+  try{
+    const result=await api('/api/admin/change-email',{method:'POST',body:JSON.stringify({email:newAdminEmailAddress.value,current_password:emailCurrentPassword.value})});
+    emailForm.reset(); emailMessage.textContent=result.message||'Adresse e-mail modifiée.';
+    // La session a été renouvelée côté serveur : on reste dans le Dashboard.
+    const me=await api('/api/admin/me');
+    adminEmail.textContent=me.email;
+    newAdminEmailAddress.value=me.email;
+  }catch(err){emailMessage.textContent=err.message}
+});
+
+passwordForm.addEventListener('submit',async e=>{
+  e.preventDefault();
+  passwordMessage.textContent='';
+
+  if(newPassword.value !== confirmPassword.value){
+    passwordMessage.textContent='Les deux nouveaux mots de passe ne correspondent pas.';
+    return;
+  }
+
+  try{
+    const result=await api('/api/admin/change-password',{
+      method:'POST',
+      body:JSON.stringify({
+        current_password:currentPassword.value,
+        new_password:newPassword.value
+      })
+    });
+    passwordForm.reset();
+    passwordMessage.textContent=result.message || 'Mot de passe modifié.';
+    alert('Mot de passe modifié. Vous allez être déconnecté.');
+    location.replace('/');
+  }catch(err){
+    passwordMessage.textContent=err.message;
+  }
+});
+
+async function loadAboutAdmin(){try{const d=await api('/api/site/about');aboutKickerInput.value=d.about_kicker||'';aboutTitleInput.value=d.about_title||'';aboutTextInput.value=d.about_text||'';aboutImageInput.value=d.about_image||'';}catch(e){aboutMsg.textContent=e.message}}
+aboutForm.addEventListener('submit',async e=>{e.preventDefault();try{await api('/api/admin/site/about',{method:'PUT',body:JSON.stringify({about_kicker:aboutKickerInput.value,about_title:aboutTitleInput.value,about_text:aboutTextInput.value,about_image:aboutImageInput.value})});aboutMsg.textContent='Modifications enregistrées.';}catch(err){aboutMsg.textContent=err.message}});
+
+async function loadAdmins(){
+  try{
+    const admins=await api('/api/admin/admins');
+    adminsList.innerHTML=admins.map(ad=>`
+      <div class="adminRow">
+        <div>
+          <strong>${esc(ad.email)}</strong>
+          <div class="adminMeta">${ad.primary?'Administrateur principal · protégé':'Administrateur'}${ad.created_at?' · créé le '+esc(ad.created_at):''}</div>
+        </div>
+        ${ad.primary?'':`<button class="btn danger" onclick="deleteAdmin(${ad.id},'${esc(ad.email)}')">Supprimer</button>`}
+      </div>
+    `).join('') || '<div class="muted">Aucun administrateur.</div>';
+  }catch(err){
+    adminsList.innerHTML='<div class="muted">'+esc(err.message)+'</div>';
+  }
+}
+
+newAdminForm.addEventListener('submit',async e=>{
+  e.preventDefault();
+  newAdminMessage.textContent='';
+  if(newAdminPassword.value!==newAdminPassword2.value){
+    newAdminMessage.textContent='Les deux mots de passe ne correspondent pas.';
+    return;
+  }
+  try{
+    await api('/api/admin/admins',{
+      method:'POST',
+      body:JSON.stringify({email:newAdminEmail.value,password:newAdminPassword.value})
+    });
+    newAdminForm.reset();
+    newAdminMessage.textContent='Administrateur créé avec succès.';
+    await loadAdmins();
+  }catch(err){
+    newAdminMessage.textContent=err.message;
+  }
+});
+
+async function deleteAdmin(id,email){
+  if(!confirm(`Supprimer l’accès administrateur de "${email}" ?`)) return;
+  try{
+    await api('/api/admin/admins/'+id,{method:'DELETE'});
+    await loadAdmins();
+  }catch(err){
+    alert(err.message);
+  }
+}
+
+
+function promoDisplay(type,value){return type==='percent'?value+' %':(value/100).toFixed(2)+' €'}
+async function loadPromotions(){
+ try{
+  const d=await api('/api/admin/promotions');
+  promoCodesList.innerHTML=d.codes.map(x=>`<div class="promoRow"><div><strong>${esc(x.code)}</strong> — ${promoDisplay(x.discount_type,x.discount_value)} <span class="muted">${x.active?'Actif':'Désactivé'}</span></div><div><button class="btn ghost" onclick="togglePromo(${x.id})">${x.active?'Désactiver':'Activer'}</button> <button class="btn danger" onclick="deletePromo(${x.id})">Supprimer</button></div></div>`).join('')||'<div class="muted">Aucun code promo.</div>';
+  productPromosList.innerHTML=d.products.map(x=>`<div class="promoRow"><div><strong>${esc(x.name)}</strong> — ${promoDisplay(x.discount_type,x.discount_value)}</div><button class="btn danger" onclick="removeProductPromo(${x.product_id})">Retirer</button></div>`).join('')||'<div class="muted">Aucune promotion produit.</div>';
+  const products=await api('/api/products');
+  promoProduct.innerHTML=products.map(p=>`<option value="${p.id}">${esc(p.name)}</option>`).join('');
+ }catch(err){promoMsg.textContent=err.message}
+}
+promoCodeForm.addEventListener('submit',async e=>{
+ e.preventDefault(); promoMsg.textContent='';
+ try{
+  await api('/api/admin/promo-codes',{method:'POST',body:JSON.stringify({
+   code:promoCode.value,discount_type:promoType.value,
+   discount_value:promoType.value==='fixed'?Math.round(Number(promoValue.value)*100):Number(promoValue.value),
+   min_order_cents:Math.round(Number(promoMinimum.value||0)*100),
+   starts_at:promoStart.value||null,ends_at:promoEnd.value||null
+  })});
+  promoCodeForm.reset(); promoMinimum.value='0'; promoMsg.textContent='Code promo créé.'; loadPromotions();
+ }catch(err){promoMsg.textContent=err.message}
+});
+productPromoForm.addEventListener('submit',async e=>{
+ e.preventDefault();
+ try{
+  await api('/api/admin/product-promotions/'+promoProduct.value,{method:'PUT',body:JSON.stringify({
+   discount_type:productPromoType.value,
+   discount_value:productPromoType.value==='fixed'?Math.round(Number(productPromoValue.value)*100):Number(productPromoValue.value),
+   starts_at:productPromoStart.value||null,ends_at:productPromoEnd.value||null
+  })}); productPromoForm.reset(); loadPromotions();
+ }catch(err){alert(err.message)}
+});
+async function togglePromo(id){await api('/api/admin/promo-codes/'+id+'/toggle',{method:'PATCH'});loadPromotions()}
+async function deletePromo(id){if(confirm('Supprimer ce code promo ?')){await api('/api/admin/promo-codes/'+id,{method:'DELETE'});loadPromotions()}}
+async function removeProductPromo(id){if(confirm('Retirer cette promotion ?')){await api('/api/admin/product-promotions/'+id,{method:'DELETE'});loadPromotions()}}
+
+boot();
+</script></body></html>

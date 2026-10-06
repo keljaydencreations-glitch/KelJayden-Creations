@@ -1,0 +1,370 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>KelJayden Créations</title>
+<meta name="description" content="Créations faites main avec passion.">
+<style>
+:root{--rose:#c98282;--rose2:#e7c2bd;--cream:#fff9f6;--ink:#292321;--muted:#756a67;--line:#ead8d3}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;font-family:Arial,sans-serif;background:var(--cream);color:var(--ink)}
+a{text-decoration:none;color:inherit}button{font:inherit}.top{background:#d9aaa6;color:#fff;text-align:center;padding:9px;font-size:12px}
+header{position:sticky;top:0;z-index:20;background:rgba(255,249,246,.96);border-bottom:1px solid #efe1dc}
+nav{max-width:1200px;margin:auto;height:84px;padding:0 22px;display:flex;align-items:center;justify-content:space-between}.logo{font:32px Georgia,serif}.logo small{display:block;font:9px Arial;letter-spacing:5px;text-align:center;margin-top:4px}
+.links{display:flex;gap:25px;font-size:13px}.nav-actions{display:flex;gap:12px;align-items:center}.accountBtn{border:0;background:none;color:#5d504d;cursor:pointer;font-size:12px;text-transform:uppercase;letter-spacing:.7px;padding:8px}
+.accountBtn:hover{text-decoration:underline}.cartBtn{border:0;background:none;cursor:pointer;position:relative;font-size:22px}.badge{position:absolute;right:-8px;top:-7px;background:var(--rose);color:#fff;border-radius:50%;min-width:18px;height:18px;display:grid;place-items:center;font-size:10px}
+.hero{max-width:1200px;margin:auto;display:grid;grid-template-columns:45% 55%;min-height:540px}.heroCopy{padding:70px 48px;display:flex;flex-direction:column;justify-content:center}.script{font:italic 24px Georgia,serif;color:#a26966}.hero h1{font:64px Georgia,serif;line-height:.95;margin:15px 0 22px}.hero h1 span{color:var(--rose)}.hero p{line-height:1.7;color:#514845}.heroImg{background:url('/hero.png') center/cover no-repeat}.btn{display:inline-block;background:var(--rose);color:white;border:0;padding:13px 18px;font-size:12px;cursor:pointer}.heroActions{display:flex;gap:15px;margin-top:25px}
+.features{background:#f3e5e1;border-block:1px solid var(--line)}.featureGrid{max-width:1200px;margin:auto;display:grid;grid-template-columns:repeat(4,1fr);padding:20px}.feature{padding:10px 20px;border-right:1px solid #dec8c3;font-size:12px}.feature:last-child{border:0}.feature b{display:block;margin-bottom:5px}
+section{max-width:1200px;margin:auto;padding:70px 22px}.sectionHead{display:flex;justify-content:space-between;align-items:end;margin-bottom:25px}h2{font:42px Georgia,serif;margin:5px 0}.products{display:grid;grid-template-columns:repeat(4,1fr);gap:18px}.card{background:white;border:1px solid #ecdeda;border-radius:10px;overflow:hidden;box-shadow:0 4px 16px rgba(60,40,35,.06)}.productImg{aspect-ratio:1;background-size:cover;background-position:center}.cardBody{padding:15px}.card h3{font-size:14px;margin:0 0 8px}.price{color:var(--rose);font-weight:bold;font-size:14px}.stock{font-size:11px;color:var(--muted);margin-top:5px}.add{width:100%;margin-top:12px;background:var(--rose);color:#fff;border:0;padding:11px;cursor:pointer}.add:disabled{opacity:.45;cursor:not-allowed}
+.about{max-width:none;background:#f0ded9;display:grid;grid-template-columns:1fr 1fr;padding:0}.aboutImg{min-height:340px;background:url('/hero.png') center/cover}.aboutCopy{padding:55px 8vw}
+footer{background:#f6e9e5;border-top:1px solid var(--line);padding:45px 22px}.footerInner{max-width:1200px;margin:auto;display:flex;justify-content:space-between;gap:30px}.adminLink{font-size:12px;text-decoration:underline}
+.overlay{position:fixed;inset:0;background:rgba(30,20,17,.4);opacity:0;visibility:hidden;transition:.2s;z-index:40}.overlay.on{opacity:1;visibility:visible}.drawer{position:fixed;right:0;top:0;width:min(450px,100%);height:100vh;background:#fffaf7;z-index:50;transform:translateX(105%);transition:.25s;display:flex;flex-direction:column}.drawer.on{transform:none}.drawerHead{padding:22px;display:flex;justify-content:space-between;border-bottom:1px solid var(--line)}.close{border:0;background:none;font-size:28px;cursor:pointer}.cartItems{padding:15px 22px;overflow:auto;flex:1}.cartRow{display:grid;grid-template-columns:1fr auto;gap:10px;padding:13px 0;border-bottom:1px solid #eee}.qty{display:flex;align-items:center;gap:8px;margin-top:8px}.qty button{width:28px;height:28px;border:1px solid var(--line);background:#fff;cursor:pointer}.remove{border:0;background:none;color:#9a5d59;font-size:11px;cursor:pointer;margin-left:8px}.summary{padding:20px 22px;border-top:1px solid var(--line);background:white}.sumline{display:flex;justify-content:space-between;margin:8px 0}.total{font-size:18px;font-weight:bold;border-top:1px solid #eee;padding-top:12px;margin-top:12px}
+.modal{position:fixed;inset:0;background:rgba(30,20,17,.55);z-index:60;display:none;align-items:center;justify-content:center;padding:20px}.modal.on{display:flex}.modalBox{background:#fffaf7;width:min(620px,100%);max-height:92vh;overflow:auto;border-radius:10px;padding:28px;position:relative}.modalBox label{display:block;font-size:12px;margin:10px 0}.modalBox input,.modalBox select{width:100%;padding:11px;border:1px solid #ddccc7;background:#fff;margin-top:5px}.formGrid{display:grid;grid-template-columns:1fr 1fr;gap:12px}.notice{padding:12px;background:#f4e7e3;font-size:12px;color:#685d5a;margin:12px 0}.statusMsg{display:none;padding:15px;border-radius:8px;margin:18px auto;max-width:1200px}.statusMsg.on{display:block}.success{background:#e9f3ea}.cancel{background:#f7e9e4}
+@media(max-width:850px){.links{display:none}.hero{grid-template-columns:1fr}.heroCopy{padding:50px 25px}.heroImg{min-height:320px}.products{grid-template-columns:1fr 1fr}.featureGrid{grid-template-columns:1fr 1fr}.about{grid-template-columns:1fr}.footerInner{flex-direction:column}.hero h1{font-size:50px}}
+@media(max-width:520px){.products,.featureGrid,.formGrid{grid-template-columns:1fr}.hero h1{font-size:44px}}
+</style>
+</head>
+<body>
+<div class="top">Livraison offerte dès 70 € • Fait main avec amour ♡</div>
+<header><nav>
+  <a class="logo" href="/">KelJayden<small>CRÉATIONS</small></a>
+  <div class="links"><a href="/">Accueil</a><a href="#creations">Nos créations</a><a href="#apropos">À propos</a></div>
+  <div class="nav-actions">
+    <button id="dashboardTab" class="accountBtn" type="button" style="display:none" onclick="goToDashboard()">Dashboard</button>
+    <button id="accountBtn" class="accountBtn" onclick="accountAction()">Connexion</button>
+    <button class="cartBtn" onclick="openCart()">🛍️<span class="badge" id="badge">0</span></button>
+  </div>
+</nav></header>
+<div id="paymentMsg" class="statusMsg"></div>
+
+<main>
+<div class="hero">
+  <div class="heroCopy"><div class="script">Fait main avec passion ♡</div><h1>KelJayden<br><span>Créations</span></h1>
+  <p>Des créations uniques, faites à la main avec soin pour embellir votre quotidien et faire plaisir à ceux que vous aimez.</p>
+  <div class="heroActions"><a class="btn" href="#creations">DÉCOUVRIR NOS CRÉATIONS</a></div></div>
+  <div class="heroImg"></div>
+</div>
+
+<div class="features"><div class="featureGrid">
+  <div class="feature"><b>♡ FAIT MAIN</b>Chaque création est réalisée avec soin.</div>
+  <div class="feature"><b>✦ QUALITÉ</b>Matières sélectionnées avec attention.</div>
+  <div class="feature"><b>🎁 IDÉES CADEAUX</b>Pour toutes les occasions.</div>
+  <div class="feature"><b>🚚 LIVRAISON</b>Offerte dès 70 €.</div>
+</div></div>
+
+<section id="creations">
+  <div class="sectionHead"><div><div class="script">Nos coups de cœur ♡</div><h2>Nos créations</h2></div><span id="productCount"></span></div>
+  <div id="products" class="products"><p>Chargement des produits…</p></div>
+</section>
+
+<section id="apropos" class="about">
+  <div id="aboutImage" class="aboutImg"></div>
+  <div class="aboutCopy"><div id="aboutKicker" class="script">L’histoire de KelJayden Créations ♡</div><h2 id="aboutTitle">Des créations pensées avec le cœur</h2><p id="aboutText">Chaque pièce est imaginée avec soin pour vous offrir des créations uniques et authentiques.</p></div>
+</section>
+</main>
+
+<footer><div class="footerInner"><div><b>KelJayden Créations</b><p>Des créations faites main avec passion.</p></div><div></div></div></footer>
+
+<div id="overlay" class="overlay" onclick="closeCart()"></div>
+<aside id="drawer" class="drawer">
+  <div class="drawerHead"><div><div class="script">Votre sélection ♡</div><h2>Mon panier</h2></div><button class="close" onclick="closeCart()">×</button></div>
+  <div id="cartItems" class="cartItems"></div>
+  <div class="summary">
+    <div class="sumline"><span>Sous-total</span><b id="subtotal">0,00 €</b></div>
+    <div style="margin:14px 0;padding:12px;border:1px solid var(--line)">
+      <label style="font-size:11px">CODE PROMO</label>
+      <div style="display:flex;gap:8px;margin-top:6px"><input id="promoInput" placeholder="Ex. BIENVENUE10" style="flex:1;padding:10px;border:1px solid var(--line);text-transform:uppercase"><button class="btn" type="button" onclick="applyPromoCode()">APPLIQUER</button></div>
+      <div id="promoFeedback" style="font-size:11px;margin-top:7px;color:var(--muted)"></div>
+    </div>
+    <div class="sumline" id="discountLine" style="display:none"><span>Réduction</span><b id="discountAmount">−0,00 €</b></div>
+    <div class="sumline"><span>Livraison</span><span id="shipping">—</span></div>
+    <div class="sumline total"><span>Total</span><span id="total">0,00 €</span></div>
+    <button class="btn" style="width:100%;margin-top:12px" onclick="openCheckout()">PASSER LA COMMANDE</button>
+  </div>
+</aside>
+
+<div id="checkoutModal" class="modal">
+  <div class="modalBox">
+    <button class="close" style="position:absolute;right:15px;top:10px" onclick="closeCheckout()">×</button>
+    <div class="script">Votre commande ♡</div><h2>Livraison & paiement</h2>
+    <form id="checkoutForm">
+      <div class="formGrid"><label>Prénom<input name="first_name" required></label><label>Nom<input name="last_name" required></label></div>
+      <label>E-mail<input name="email" type="email" required></label>
+      <label>Téléphone<input name="phone" type="tel"></label>
+      <label>Adresse<input name="address" required></label>
+      <div class="formGrid"><label>Code postal<input name="zip" required></label><label>Ville<input name="city" required></label></div>
+      <label>Pays<select name="country"><option>France</option><option>Belgique</option><option>Luxembourg</option><option>Suisse</option></select></label>
+      <div class="notice">Si Stripe est configuré dans le fichier <b>.env</b>, le bouton vous redirigera vers le paiement sécurisé Stripe. Sinon, la commande sera créée en mode démonstration.</div>
+      <button class="btn" style="width:100%" id="payBtn">CONTINUER VERS LE PAIEMENT</button>
+    </form>
+  </div>
+</div>
+
+<script>
+const eur = c => (c/100).toLocaleString('fr-FR',{style:'currency',currency:'EUR'});
+let products = [];
+let cart = JSON.parse(localStorage.getItem('kj_cart')||'[]');
+let appliedPromo=localStorage.getItem('kj_promo')||'';let promoDiscountCents=0;
+
+async function api(url,opt={}){const r=await fetch(url,{headers:{'Content-Type':'application/json'},credentials:'same-origin',...opt});let d={};try{d=await r.json()}catch{}if(!r.ok)throw new Error(d.error||'Erreur serveur');return d}
+
+async function loadProducts(){
+  try{
+    products=await api('/api/products');
+    productCount.textContent=products.length+' produit'+(products.length>1?'s':'');
+    document.getElementById('products').innerHTML=products.map(p=>`
+      <article class="card">
+        <div class="productImg" style="background-image:url('${p.image_url||'/hero.png'}')"></div>
+        <div class="cardBody"><h3>${esc(p.name)}</h3><div class="price">${eur(p.price_cents)}</div>
+        <div class="stock">${p.stock>0?'En stock : '+p.stock:'Rupture de stock'}</div>
+        <button class="add" ${p.stock<1?'disabled':''} onclick="addCart(${p.id})">${p.stock<1?'INDISPONIBLE':'AJOUTER AU PANIER'}</button></div>
+      </article>`).join('') || '<p>Aucun produit actif pour le moment.</p>';
+    cart=cart.filter(i=>products.some(p=>p.id===i.product_id)); saveCart(false);
+  }catch(e){document.getElementById('products').innerHTML='<p>Impossible de charger les produits : '+esc(e.message)+'</p>'}
+}
+function esc(s){return String(s).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]))}
+function addCart(id){
+  const p=products.find(x=>x.id===id); if(!p)return;
+  const i=cart.find(x=>x.product_id===id); const current=i?i.quantity:0;
+  if(current>=p.stock)return alert('Stock maximum atteint.');
+  if(i)i.quantity++;else cart.push({product_id:id,quantity:1});
+  saveCart();
+}
+function changeQty(id,d){
+  const p=products.find(x=>x.id===id),i=cart.find(x=>x.product_id===id);if(!i||!p)return;
+  i.quantity+=d;if(i.quantity>p.stock)i.quantity=p.stock;if(i.quantity<=0)cart=cart.filter(x=>x.product_id!==id);saveCart();
+}
+function removeItem(id){cart=cart.filter(x=>x.product_id!==id);saveCart()}
+function saveCart(render=true){localStorage.setItem('kj_cart',JSON.stringify(cart));if(render)renderCart();else renderCart()}
+async function renderCart(){
+ let subtotalCents=0,count=0;
+ const rows=cart.map(i=>{const p=products.find(x=>x.id===i.product_id);if(!p)return '';subtotalCents+=p.price_cents*i.quantity;count+=i.quantity;return `<div class="cartRow"><div><b>${esc(p.name)}</b><div>${eur(p.price_cents)}</div><div class="qty"><button onclick="changeQty(${p.id},-1)">−</button><span>${i.quantity}</span><button onclick="changeQty(${p.id},1)">+</button><button class="remove" onclick="removeItem(${p.id})">Supprimer</button></div></div><b>${eur(p.price_cents*i.quantity)}</b></div>`}).join('');
+ cartItems.innerHTML=rows||'<p>Votre panier est vide.</p>';badge.textContent=count;subtotal.textContent=eur(subtotalCents);promoDiscountCents=0;
+ if(appliedPromo&&cart.length){try{const r=await api('/api/promotions/validate',{method:'POST',body:JSON.stringify({code:appliedPromo,items:cart.map(i=>({id:i.product_id,qty:i.quantity}))})});promoDiscountCents=r.discount_cents||0;promoInput.value=appliedPromo;promoFeedback.textContent=`Code ${appliedPromo} appliqué ✓`;discountLine.style.display=promoDiscountCents?'flex':'none';discountAmount.textContent='−'+eur(promoDiscountCents)}catch(e){appliedPromo='';localStorage.removeItem('kj_promo');promoFeedback.textContent=e.message;discountLine.style.display='none'}}
+ else{discountLine.style.display='none'}
+ const net=Math.max(0,subtotalCents-promoDiscountCents),ship=net===0?0:(net>=7000?0:490);shipping.textContent=net===0?'—':(ship===0?'Offerte':eur(ship));total.textContent=eur(net+ship);
+}
+async function applyPromoCode(){
+ const code=promoInput.value.trim().toUpperCase();
+ if(!code){appliedPromo='';localStorage.removeItem('kj_promo');promoFeedback.textContent='';return renderCart()}
+ try{await api('/api/promotions/validate',{method:'POST',body:JSON.stringify({code,items:cart.map(i=>({id:i.product_id,qty:i.quantity}))})});appliedPromo=code;localStorage.setItem('kj_promo',code);await renderCart()}
+ catch(e){appliedPromo='';localStorage.removeItem('kj_promo');promoFeedback.textContent=e.message}
+}
+function openCart(){drawer.classList.add('on');overlay.classList.add('on')}function closeCart(){drawer.classList.remove('on');overlay.classList.remove('on')}
+function openCheckout(){if(!cart.length)return alert('Votre panier est vide.');closeCart();checkoutModal.classList.add('on')}function closeCheckout(){checkoutModal.classList.remove('on')}
+checkoutForm.addEventListener('submit',async e=>{
+  e.preventDefault();payBtn.disabled=true;payBtn.textContent='PRÉPARATION…';
+  try{
+    const body=Object.fromEntries(new FormData(e.target).entries());body.items=cart;body.promo_code=appliedPromo||'';
+    const result=await api('/api/checkout/session',{method:'POST',body:JSON.stringify(body)});
+    if(result.checkout_url){location.href=result.checkout_url;return}
+    alert(`N° de commande : ${result.number} — commande créée en mode démonstration. Total : ${eur(result.total_cents)}`);
+    cart=[];saveCart();closeCheckout();await loadProducts();
+  }catch(err){alert(err.message)}finally{payBtn.disabled=false;payBtn.textContent='CONTINUER VERS LE PAIEMENT'}
+});
+const q=new URLSearchParams(location.search),payment=q.get('payment'),order=q.get('order');
+if(payment){
+  paymentMsg.className='statusMsg on '+(payment==='success'?'success':'cancel');
+  paymentMsg.textContent=payment==='success'?`Paiement terminé. N° de commande : ${order||''} — confirmation en cours.`:`Paiement annulé. N° de commande : ${order||''}.`;
+  if(payment==='success'){cart=[];localStorage.removeItem('kj_cart')}
+}
+loadProducts().then(renderCart);
+</script>
+
+
+
+<div id="accountModal" class="modal">
+  <div class="modalBox" style="max-width:470px">
+    <button class="close" style="position:absolute;right:15px;top:10px" onclick="closeAccountModal()">×</button>
+
+    <div id="authForms">
+      <div class="script">Bienvenue ♡</div>
+      <h2 id="authTitle">Connexion</h2>
+      <p id="authIntro" style="font-size:12px;color:var(--muted)">Connectez-vous à votre compte.</p>
+
+      <div style="display:flex;gap:8px;margin:14px 0">
+        <button type="button" id="loginTabBtn" class="btn" onclick="showLoginForm()">SE CONNECTER</button>
+        <button type="button" id="registerTabBtn" class="btn ghost" onclick="showRegisterForm()">CRÉER UN COMPTE</button>
+      </div>
+
+      <form id="accountLoginForm">
+        <label>E-mail<input id="loginEmail" type="email" autocomplete="email" required></label>
+        <label>Mot de passe<input id="loginPassword" type="password" autocomplete="current-password" required></label>
+        <button class="btn" style="width:100%;margin-top:12px">SE CONNECTER</button>
+        <p id="loginError" style="color:#a2463d;font-size:12px"></p>
+      </form>
+
+      <form id="accountRegisterForm" style="display:none">
+        <label>Prénom<input id="registerFirstName" autocomplete="given-name" maxlength="80" required></label>
+        <label>Nom<input id="registerLastName" autocomplete="family-name" maxlength="80"></label>
+        <label>E-mail<input id="registerEmail" type="email" autocomplete="email" required></label>
+        <label>Mot de passe<input id="registerPassword" type="password" autocomplete="new-password" minlength="10" required></label>
+        <label>Confirmer le mot de passe<input id="registerPassword2" type="password" autocomplete="new-password" minlength="10" required></label>
+        <div style="font-size:11px;color:var(--muted);margin-top:5px">10 caractères minimum.</div>
+        <button class="btn" style="width:100%;margin-top:12px">CRÉER MON COMPTE</button>
+        <p id="registerError" style="color:#a2463d;font-size:12px"></p>
+      </form>
+    </div>
+
+    <div id="customerAccountView" style="display:none">
+      <div class="script">Mon compte ♡</div>
+      <h2>Bonjour <span id="customerFirstName"></span></h2>
+      <p style="font-size:12px;color:var(--muted)">Vous êtes connecté avec :</p>
+      <p id="customerEmail" style="font-weight:600"></p>
+      <div style="margin-top:20px;border-top:1px solid #eee;padding-top:15px">
+        <h3 style="margin:0 0 10px">Mes commandes</h3>
+        <div id="customerOrders"><p style="font-size:12px;color:var(--muted)">Chargement…</p></div>
+      </div>
+      <button type="button" class="btn" style="width:100%;margin-top:12px" onclick="logoutAccount()">SE DÉCONNECTER</button>
+    </div>
+  </div>
+</div>
+
+<script>
+function goToDashboard(){ window.location.assign("/admin"); }
+let currentAccount=null;
+
+async function refreshAccountButton(){
+  try{
+    const me=await api('/api/account/me');
+    currentAccount=me;
+
+    if(me.role==='admin'){
+      dashboardTab.style.display='inline-block';
+      accountBtn.textContent='Déconnexion';
+      accountBtn.dataset.role='admin';
+    }else if(me.role==='customer'){
+      dashboardTab.style.display='none';
+      accountBtn.textContent='Mon compte';
+      accountBtn.dataset.role='customer';
+    }
+  }catch{
+    currentAccount=null;
+    dashboardTab.style.display='none';
+    accountBtn.textContent='Connexion';
+    accountBtn.dataset.role='guest';
+  }
+}
+
+async function accountAction(){
+  if(accountBtn.dataset.role==='admin'){
+    await logoutAccount();
+    return;
+  }
+  openAccountModal();
+}
+
+function openAccountModal(){
+  accountModal.classList.add('on');
+  if(currentAccount && currentAccount.role==='customer'){
+    authForms.style.display='none';
+    customerAccountView.style.display='block';
+    customerFirstName.textContent=currentAccount.user.first_name||'';
+    customerEmail.textContent=currentAccount.user.email||'';
+    loadCustomerOrders();
+  }else{
+    authForms.style.display='block';
+    customerAccountView.style.display='none';
+    showLoginForm();
+  }
+}
+
+function customerOrderStatus(status){
+  return ({pending:'En attente',preparing:'En préparation',shipped:'Expédiée',completed:'Terminée',cancelled:'Annulée'})[status]||status;
+}
+async function loadCustomerOrders(){
+  const box=document.getElementById('customerOrders');
+  if(!box)return;
+  try{
+    const orders=await api('/api/account/orders');
+    if(!orders.length){
+      box.innerHTML='<p style="font-size:12px;color:var(--muted)">Aucune commande pour le moment.</p>';
+      return;
+    }
+    box.innerHTML=orders.map(o=>`
+      <div style="border:1px solid #eadfdb;border-radius:10px;padding:12px;margin:8px 0;font-size:12px">
+        <div style="display:flex;justify-content:space-between;gap:10px"><b>${esc(o.number)}</b><b>${esc(customerOrderStatus(o.status))}</b></div>
+        <div style="margin-top:6px;color:var(--muted)">${new Date(o.created_at).toLocaleDateString('fr-FR')} · ${eur(o.total_cents)}</div>
+      </div>`).join('');
+  }catch(e){
+    box.innerHTML='<p style="font-size:12px;color:#a2463d">Impossible de charger vos commandes.</p>';
+  }
+}
+
+function closeAccountModal(){accountModal.classList.remove('on')}
+
+function showLoginForm(){
+  authTitle.textContent='Connexion';
+  authIntro.textContent='Connectez-vous à votre compte.';
+  accountLoginForm.style.display='block';
+  accountRegisterForm.style.display='none';
+  loginTabBtn.classList.remove('ghost');
+  registerTabBtn.classList.add('ghost');
+  loginError.textContent='';
+}
+
+function showRegisterForm(){
+  authTitle.textContent='Créer un compte';
+  authIntro.textContent='Créez votre compte KelJayden Créations.';
+  accountLoginForm.style.display='none';
+  accountRegisterForm.style.display='block';
+  loginTabBtn.classList.add('ghost');
+  registerTabBtn.classList.remove('ghost');
+  registerError.textContent='';
+}
+
+accountLoginForm.addEventListener('submit',async e=>{
+  e.preventDefault();
+  loginError.textContent='';
+  try{
+    const result=await api('/api/account/login',{
+      method:'POST',
+      body:JSON.stringify({email:loginEmail.value,password:loginPassword.value})
+    });
+    closeAccountModal();
+    await refreshAccountButton();
+    if(result.role==='admin') location.href='/admin';
+  }catch(err){
+    loginError.textContent=err.message;
+  }
+});
+
+accountRegisterForm.addEventListener('submit',async e=>{
+  e.preventDefault();
+  registerError.textContent='';
+
+  if(registerPassword.value!==registerPassword2.value){
+    registerError.textContent='Les deux mots de passe ne correspondent pas.';
+    return;
+  }
+
+  try{
+    await api('/api/account/register',{
+      method:'POST',
+      body:JSON.stringify({
+        first_name:registerFirstName.value,
+        last_name:registerLastName.value,
+        email:registerEmail.value,
+        password:registerPassword.value
+      })
+    });
+    accountRegisterForm.reset();
+    closeAccountModal();
+    await refreshAccountButton();
+  }catch(err){
+    registerError.textContent=err.message;
+  }
+});
+
+async function logoutAccount(){
+  try{await api('/api/account/logout',{method:'POST'})}catch(e){}
+  currentAccount=null;
+  dashboardTab.style.display='none';
+  accountBtn.textContent='Connexion';
+  accountBtn.dataset.role='guest';
+  closeAccountModal();
+}
+
+refreshAccountButton();
+</script>
+
+<script>async function loadAbout(){try{const d=await api('/api/site/about');if(d.about_kicker)aboutKicker.textContent=d.about_kicker;if(d.about_title)aboutTitle.textContent=d.about_title;if(d.about_text)aboutText.textContent=d.about_text;if(d.about_image)aboutImage.style.backgroundImage=`url("${d.about_image.replace(/"/g,'')}")`;}catch(e){}}loadAbout();</script></body></html>
