@@ -91,8 +91,12 @@ CREATE TABLE IF NOT EXISTS stripe_events(
 `);
 
 // Migration V22 : permet de fermer/archiver une commande terminée ou annulée.
+try { db.exec("ALTER TABLE orders ADD COLUMN shipping_method TEXT NOT NULL DEFAULT 'standard'"); } catch(e) { if(!String(e.message).includes("duplicate column name")) throw e; }
+try { db.exec("ALTER TABLE orders ADD COLUMN relay_point TEXT NOT NULL DEFAULT ''"); } catch(e) { if(!String(e.message).includes("duplicate column name")) throw e; }
 try { db.exec("ALTER TABLE orders ADD COLUMN closed INTEGER NOT NULL DEFAULT 0"); } catch(e) { if(!String(e.message).includes("duplicate column name")) throw e; }
 
+// Tarifs fixes pour les expéditions en France métropolitaine.
+const SHIPPING_METHODS = {mondial_relay:{label:"Mondial Relay — point relais",cents:450},colissimo:{label:"Colissimo — domicile",cents:690}};
 const now = () => new Date().toISOString();
 const slugify = (s) => s.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"").replace(/[^a-z0-9]+/g,"-").replace(/^-|-$/g,"");
 
@@ -274,11 +278,15 @@ app.get("/api/products",(req,res)=>{
 });
 
 app.post("/api/checkout/session", async (req,res)=>{
-  const {email,first_name,last_name,phone="",address,zip,city,country="France",items,promo_code=""} = req.body || {};
+  const {email,first_name,last_name,phone="",address,zip,city,country="France",items,promo_code="",shipping_method="colissimo",relay_point=""} = req.body || {};
   if(!email || !first_name || !last_name || !address || !zip || !city || !Array.isArray(items) || !items.length){
     return res.status(400).json({error:"Informations de commande incomplètes"});
   }
 
+  if(country !== "France") return res.status(400).json({error:"Livraison actuellement disponible uniquement en France."});
+  if(!Object.hasOwn(SHIPPING_METHODS,shipping_method)) return res.status(400).json({error:"Mode de livraison invalide"});
+  const relayPoint=String(relay_point||"").trim();
+  if(shipping_method==="mondial_relay" && (relayPoint.length<8 || relayPoint.length>250)) return res.status(400).json({error:"Indiquez le nom et l’adresse complète de votre point relais Mondial Relay."});
   const getProduct = db.prepare("SELECT * FROM products WHERE id=? AND active=1");
   const checked = [];
   let subtotal = 0;
@@ -296,7 +304,7 @@ app.post("/api/checkout/session", async (req,res)=>{
   if(promoResult.error) return res.status(400).json({error:promoResult.error});
   const promoDiscount=promoResult.discount||0;
   const discountedSubtotal=Math.max(0,subtotal-promoDiscount);
-  const shipping=discountedSubtotal>=7000?0:(discountedSubtotal===0?0:490);
+  const shipping=discountedSubtotal>=7000?0:SHIPPING_METHODS[shipping_method].cents;
   const total=discountedSubtotal+shipping;
   const number = "KJ-" + Date.now().toString().slice(-8);
   let orderId;
@@ -306,9 +314,9 @@ app.post("/api/checkout/session", async (req,res)=>{
       const info = db.prepare(`
         INSERT INTO orders(
           number,email,first_name,last_name,phone,address,zip,city,country,
-          subtotal_cents,shipping_cents,total_cents,created_at,updated_at
-        ) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?)
-      `).run(number,email,first_name,last_name,phone,address,zip,city,country,subtotal,shipping,total,now(),now());
+          subtotal_cents,shipping_cents,total_cents,created_at,updated_at,shipping_method,relay_point
+        ) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)
+      `).run(number,email,first_name,last_name,phone,address,zip,city,country,subtotal,shipping,total,now(),now(),shipping_method,shipping_method==="mondial_relay"?relayPoint:"");
 
       orderId = Number(info.lastInsertRowid);
       const addItem = db.prepare("INSERT INTO order_items(order_id,product_id,name,unit_price_cents,quantity) VALUES(?,?,?,?,?)");
@@ -350,7 +358,7 @@ app.post("/api/checkout/session", async (req,res)=>{
     }
     if(shipping){
       line_items.push({
-        price_data:{currency:STRIPE_CURRENCY,product_data:{name:"Livraison standard"},unit_amount:shipping},
+        price_data:{currency:STRIPE_CURRENCY,product_data:{name:SHIPPING_METHODS[shipping_method].label},unit_amount:shipping},
         quantity:1
       });
     }

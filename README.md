@@ -31,3 +31,7 @@ Puis copier le secret `whsec_...` dans `STRIPE_WEBHOOK_SECRET`.
 Si vous voulez conserver les produits, comptes et commandes déjà présents, votre base `keljayden.db` actuelle doit être transférée sur le disque persistant `/var/data` avant d'utiliser le site en production.
 
 Ne publiez jamais un fichier `.env` contenant vos clés Stripe ou Resend.
+
+## Livraison (tarifs fixes)
+
+Au paiement, le client choisit Mondial Relay (4,50 €, point relais indiqué manuellement) ou Colissimo (6,90 €, domicile). Livraison offerte dès 70 € après réduction. Livraison limitée à la France. Les choix et coordonnées sont conservés dans la base de données et visibles dans l'administration. L'achat d'étiquettes et la sélection automatique d'un point relais ne sont pas intégrés.

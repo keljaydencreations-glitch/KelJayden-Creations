@@ -246,6 +246,7 @@ function renderOrders(){
         ${esc(o.first_name)} ${esc(o.last_name)} · ${esc(o.email)} · ${esc(o.city)}
         · Paiement : ${esc(o.payment_status)}
       </div>
+      <div class="muted">Livraison : ${o.shipping_method==='mondial_relay'?'Mondial Relay — point relais':o.shipping_method==='colissimo'?'Colissimo — domicile':'Standard (ancienne commande)'} · ${eur(o.shipping_cents)}<div>Adresse : ${esc(o.address)}, ${esc(o.zip)} ${esc(o.city)}, ${esc(o.country)}</div>${o.relay_point?`<div><b>Point relais : ${esc(o.relay_point)}</b></div>`:''}</div>
       <p>${o.items.map(i=>`${esc(i.name)} × ${i.quantity}`).join(' • ')}</p>
       <select onchange="setStatus(${o.id},this.value)" ${Number(o.closed)===1?'disabled':''}>
         ${Object.entries(labels).map(([v,l])=>`<option value="${v}" ${o.status===v?'selected':''}>${l}</option>`).join('')}

@@ -76,7 +76,7 @@ footer{background:#f6e9e5;border-top:1px solid var(--line);padding:45px 22px}.fo
       <div id="promoFeedback" style="font-size:11px;margin-top:7px;color:var(--muted)"></div>
     </div>
     <div class="sumline" id="discountLine" style="display:none"><span>Réduction</span><b id="discountAmount">−0,00 €</b></div>
-    <div class="sumline"><span>Livraison</span><span id="shipping">—</span></div>
+    <div class="sumline"><span>Livraison estimée (selon le choix au paiement)</span><span id="shipping">—</span></div>
     <div class="sumline total"><span>Total</span><span id="total">0,00 €</span></div>
     <button class="btn" style="width:100%;margin-top:12px" onclick="openCheckout()">PASSER LA COMMANDE</button>
   </div>
@@ -92,7 +92,10 @@ footer{background:#f6e9e5;border-top:1px solid var(--line);padding:45px 22px}.fo
       <label>Téléphone<input name="phone" type="tel"></label>
       <label>Adresse<input name="address" required></label>
       <div class="formGrid"><label>Code postal<input name="zip" required></label><label>Ville<input name="city" required></label></div>
-      <label>Pays<select name="country"><option>France</option><option>Belgique</option><option>Luxembourg</option><option>Suisse</option></select></label>
+      <label>Pays<select name="country"><option>France</option></select></label>
+      <label>Mode de livraison<select name="shipping_method" id="shippingMethod" onchange="updateShippingChoice()"><option value="mondial_relay">Mondial Relay — point relais (4,50 €)</option><option value="colissimo">Colissimo — domicile (6,90 €)</option></select></label>
+      <label id="relayPointField">Point relais Mondial Relay (nom et adresse complète)<input name="relay_point" id="relayPoint" placeholder="Ex. Point Relais, 12 rue Exemple, 75001 Paris" required><small>Choisissez vous-même un point relais sur le site Mondial Relay et recopiez son adresse ici. Pas de réservation automatique.</small></label>
+      <div class="notice" id="checkoutShippingNotice">Livraison offerte dès 70 € après réduction. France uniquement.</div>
       <div class="notice">Si Stripe est configuré dans le fichier <b>.env</b>, le bouton vous redirigera vers le paiement sécurisé Stripe. Sinon, la commande sera créée en mode démonstration.</div>
       <button class="btn" style="width:100%" id="payBtn">CONTINUER VERS LE PAIEMENT</button>
     </form>
@@ -141,7 +144,7 @@ async function renderCart(){
  cartItems.innerHTML=rows||'<p>Votre panier est vide.</p>';badge.textContent=count;subtotal.textContent=eur(subtotalCents);promoDiscountCents=0;
  if(appliedPromo&&cart.length){try{const r=await api('/api/promotions/validate',{method:'POST',body:JSON.stringify({code:appliedPromo,items:cart.map(i=>({id:i.product_id,qty:i.quantity}))})});promoDiscountCents=r.discount_cents||0;promoInput.value=appliedPromo;promoFeedback.textContent=`Code ${appliedPromo} appliqué ✓`;discountLine.style.display=promoDiscountCents?'flex':'none';discountAmount.textContent='−'+eur(promoDiscountCents)}catch(e){appliedPromo='';localStorage.removeItem('kj_promo');promoFeedback.textContent=e.message;discountLine.style.display='none'}}
  else{discountLine.style.display='none'}
- const net=Math.max(0,subtotalCents-promoDiscountCents),ship=net===0?0:(net>=7000?0:490);shipping.textContent=net===0?'—':(ship===0?'Offerte':eur(ship));total.textContent=eur(net+ship);
+ const net=Math.max(0,subtotalCents-promoDiscountCents),ship=net===0?0:(net>=7000?0:450);shipping.textContent=net===0?'—':(ship===0?'Offerte':eur(ship));total.textContent=eur(net+ship);
 }
 async function applyPromoCode(){
  const code=promoInput.value.trim().toUpperCase();
@@ -150,7 +153,13 @@ async function applyPromoCode(){
  catch(e){appliedPromo='';localStorage.removeItem('kj_promo');promoFeedback.textContent=e.message}
 }
 function openCart(){drawer.classList.add('on');overlay.classList.add('on')}function closeCart(){drawer.classList.remove('on');overlay.classList.remove('on')}
-function openCheckout(){if(!cart.length)return alert('Votre panier est vide.');closeCart();checkoutModal.classList.add('on')}function closeCheckout(){checkoutModal.classList.remove('on')}
+function openCheckout(){if(!cart.length)return alert('Votre panier est vide.');closeCart();checkoutModal.classList.add('on');updateShippingChoice()}function closeCheckout(){checkoutModal.classList.remove('on')}
+function updateShippingChoice(){
+ const isRelay=shippingMethod.value==='mondial_relay';
+ relayPointField.style.display=isRelay?'block':'none';relayPoint.required=isRelay;
+ checkoutShippingNotice.textContent='Livraison offerte dès 70 € après réduction. '+(isRelay?'Mondial Relay : 4,50 €':'Colissimo : 6,90 €')+' en dessous de 70 €. France uniquement.';
+}
+updateShippingChoice();
 checkoutForm.addEventListener('submit',async e=>{
   e.preventDefault();payBtn.disabled=true;payBtn.textContent='PRÉPARATION…';
   try{
